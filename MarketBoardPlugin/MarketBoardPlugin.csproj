@@ -33,9 +33,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DefineConstants>DEBUG</DefineConstants>
   </PropertyGroup>
+
   <PropertyGroup>
-    <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+    <DalamudLibPathWindows>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPathWindows>
+    <DalamudLibPathLinux>$(HOME)/.xlcore/dalamud/Hooks/dev/</DalamudLibPathLinux>
   </PropertyGroup>
+
   <ItemGroup>
     <None Remove="../stylecop.json" />
     <AdditionalFiles Include="../stylecop.json" />
@@ -68,27 +71,32 @@
     <Reference Include="Dalamud">
       <Private>false</Private>
       <HintPath>..\..\Dalamud\bin\Dalamud.dll</HintPath>
-      <HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+      <HintPath>$(DalamudLibPathWindows)Dalamud.dll</HintPath>
+      <HintPath>$(DalamudLibPathLinux)Dalamud.dll</HintPath>
     </Reference>
     <Reference Include="ImGui.NET">
       <Private>false</Private>
       <HintPath>..\..\Dalamud\bin\ImGui.NET.dll</HintPath>
-      <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
+      <HintPath>$(DalamudLibPathWindows)ImGui.NET.dll</HintPath>
+      <HintPath>$(DalamudLibPathLinux)ImGui.NET.dll</HintPath>
     </Reference>
     <Reference Include="ImGuiScene">
       <Private>false</Private>
       <HintPath>..\..\Dalamud\bin\ImGuiScene.dll</HintPath>
-      <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
+      <HintPath>$(DalamudLibPathWindows)ImGuiScene.dll</HintPath>
+      <HintPath>$(DalamudLibPathLinux)ImGuiScene.dll</HintPath>
     </Reference>
     <Reference Include="Lumina">
       <Private>false</Private>
       <HintPath>..\..\Dalamud\bin\Lumina.dll</HintPath>
-      <HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
+      <HintPath>$(DalamudLibPathWindows)Lumina.dll</HintPath>
+      <HintPath>$(DalamudLibPathLinux)Lumina.dll</HintPath>
     </Reference>
     <Reference Include="Lumina.Excel">
       <Private>false</Private>
       <HintPath>..\..\Dalamud\bin\Lumina.Excel.dll</HintPath>
-      <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+      <HintPath>$(DalamudLibPathWindows)Lumina.Excel.dll</HintPath>
+      <HintPath>$(DalamudLibPathLinux)Lumina.Excel.dll</HintPath>
     </Reference>
   </ItemGroup>
 
