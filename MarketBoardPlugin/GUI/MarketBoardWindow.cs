@@ -1091,55 +1091,54 @@ namespace MarketBoardPlugin.GUI
 
     private void RefreshMarketData()
     {
-      Task.Run(async () =>
+      var cachedItem = this.marketBuffer.FirstOrDefault(data => data.ItemId == this.selectedItem.RowId, null);
+      if (cachedItem != null)
       {
-        var cachedItem = this.marketBuffer.FirstOrDefault(data => data.ItemId == this.selectedItem.RowId, null);
-        if (cachedItem != null)
+        this.marketData = cachedItem;
+      }
+
+      if (cachedItem == null || this.selectedWorld != this.previousSelectedWorld || DateTimeOffset.Now.ToUnixTimeMilliseconds() - cachedItem.FetchTimestamp > this.plugin.Config.ItemRefreshTimeout)
+      {
+        this.previousSelectedWorld = this.selectedWorld;
+        if (cachedItem == null)
         {
-          this.marketData = cachedItem;
-        }
-
-        if (cachedItem == null || this.selectedWorld != this.previousSelectedWorld || DateTimeOffset.Now.ToUnixTimeMilliseconds() - cachedItem.FetchTimestamp > this.plugin.Config.ItemRefreshTimeout)
-        {
-          this.previousSelectedWorld = this.selectedWorld;
-          if (cachedItem == null)
+          if (this.marketData != null)
           {
-            if (this.marketData != null)
-            {
-              this.marketBuffer.Add(this.marketData);
-            }
-
-            if (this.marketBuffer.Count > this.plugin.Config.MarketBufferSize)
-            {
-              this.marketBuffer.RemoveAt(0);
-            }
-
-            this.marketData = null;
-          }
-
-          try
-          {
-            this.marketData = await this.plugin.UniversalisClient
-              .GetMarketData(
-                this.selectedItem.RowId,
-                this.worldList[this.selectedWorld].Item1,
-                50,
-                CancellationToken.None)
-              .ConfigureAwait(false);
-          }
-          catch (Exception)
-          {
-            this.plugin.Log.Warning($"Failed to fetch market data for item {this.selectedItem.RowId} from Universalis.");
-            this.marketData = null;
-          }
-
-          if (cachedItem != null)
-          {
-            this.marketBuffer.Remove(cachedItem);
             this.marketBuffer.Add(this.marketData);
           }
+
+          if (this.marketBuffer.Count > this.plugin.Config.MarketBufferSize)
+          {
+            this.marketBuffer.RemoveAt(0);
+          }
+
+          this.marketData = null;
         }
-      });
+
+        try
+        {
+          var marketDataTask = this.plugin.UniversalisClient
+            .GetMarketData(
+              this.selectedItem.RowId,
+              this.worldList[this.selectedWorld].Item1,
+              50,
+              CancellationToken.None)
+            .ConfigureAwait(false);
+
+          this.marketData = marketDataTask.GetAwaiter().GetResult();
+        }
+        catch (Exception)
+        {
+          this.plugin.Log.Warning($"Failed to fetch market data for item {this.selectedItem.RowId} from Universalis.");
+          this.marketData = null;
+        }
+
+        if (cachedItem != null)
+        {
+          this.marketBuffer.Remove(cachedItem);
+          this.marketBuffer.Add(this.marketData);
+        }
+      }
     }
   }
 }
